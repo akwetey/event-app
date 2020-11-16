@@ -9,16 +9,18 @@ import * as Yup from "yup";
 import { Alert } from "@material-ui/lab";
 import Snackbar from "@material-ui/core/Snackbar";
 import axios from "../../../utils/axios";
+import { InvalidChar } from "./InvalidChar";
 
 interface Values {
   name: string;
   venue: string;
   status: string;
   type: string;
-  duration: number;
-  price: number;
-  number_of_slots: number;
+  duration: any;
+  price: any;
+  number_of_slots: any;
   start_time: any;
+  file: any;
 }
 interface PropsData {
   message: string;
@@ -48,16 +50,16 @@ const Add: React.FC<History> = ({ history }) => {
   const handleSubmit = async (values: Values) => {
     try {
       setLoading(true);
-      const formData = {
-        name: values.name,
-        duration: values.duration,
-        number_of_slots: values.number_of_slots,
-        price: values.price,
-        start_time: values.start_time,
-        status: values.status,
-        type: values.type,
-        venue: values.venue,
-      };
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("duration", values.duration);
+      formData.append("number_of_slots", values.number_of_slots);
+      formData.append("price", values.price);
+      formData.append("start_time", values.start_time);
+      formData.append("status", values.status);
+      formData.append("type", values.type);
+      formData.append("venue", values.venue);
+      values.file && formData.append("banner", values.file);
       const response = await axios.post("/event", formData);
       setLoading(false);
       const res = response.data;
@@ -108,6 +110,7 @@ const Add: React.FC<History> = ({ history }) => {
           start_time: "",
           type: "",
           status: "",
+          file: null,
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -148,6 +151,7 @@ const Add: React.FC<History> = ({ history }) => {
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
                     value={props.values.price}
+                    onKeyDown={InvalidChar}
                   />
                   {props.touched.price && (
                     <small className="text-danger">{props.errors.price}</small>
@@ -168,6 +172,7 @@ const Add: React.FC<History> = ({ history }) => {
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
                     value={props.values.number_of_slots}
+                    onKeyDown={InvalidChar}
                   />
                   {props.touched.number_of_slots && (
                     <small className="text-danger">
@@ -206,6 +211,7 @@ const Add: React.FC<History> = ({ history }) => {
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
                     value={props.values.duration}
+                    onKeyDown={InvalidChar}
                   />
                   {props.touched.duration && (
                     <small className="text-danger">
@@ -221,6 +227,9 @@ const Add: React.FC<History> = ({ history }) => {
                     name="start_time"
                     label="Start Time *"
                     type="datetime-local"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -268,6 +277,22 @@ const Add: React.FC<History> = ({ history }) => {
                     <MenuItem value="1">Active</MenuItem>
                     <MenuItem value="0">Inactive</MenuItem>
                   </TextField>
+                </FormControl>
+              </Grid>
+              <Grid item sm={4}>
+                <FormControl margin="normal" fullWidth>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="file"
+                    type="file"
+                    inputProps={{ accept: "image/*" }}
+                    name="file"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      props.setFieldValue("file", e.target.files![0])
+                    }
+                  />
                 </FormControl>
               </Grid>
             </Grid>

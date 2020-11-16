@@ -8,3 +8,31 @@ body {
 div .MuiDataGrid-root {
   border: none;
 }
+
+div .MuiAppBar-colorPrimary {
+  color: #fff;
+  background-color: rgb(7, 18, 3);
+}
+
+div .MuiButton-containedPrimary {
+  color: #fff;
+  background-color: rgb(7, 18, 3);
+}
+div .MuiButton-containedPrimary:hover {
+  background-color: rgb(7, 18, 3);
+}
+ul .MuiListItem-root.Mui-selected {
+  background-color: rgb(7, 18, 3);
+  color: #fff;
+}
+ul .MuiListItem-root.Mui-selected:hover {
+  background-color: rgb(7, 18, 3);
+  color: #fff;
+}
+
+a .MuiListItemIcon-root {
+  color: inherit;
+  display: inline-flex;
+  min-width: 56px;
+  flex-shrink: 0;
+}

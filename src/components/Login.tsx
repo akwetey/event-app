@@ -8,6 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import UserContext from "../contexts/UserContexts";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,12 +34,10 @@ interface Values {
   email: string;
   password: string;
 }
-interface History {
-  history: Array<string>;
-}
 
-const Login: React.FC<History> = ({ history }) => {
+const Login: React.FC<History> = () => {
   const classes = useStyles();
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Email Should Be A Valid Email Address")
@@ -45,9 +45,24 @@ const Login: React.FC<History> = ({ history }) => {
     password: Yup.string().required("Required"),
   });
 
-  const handleSubmit = (values: Values) => {
-    console.log(values);
-    history.push("/dashboard");
+  const context = React.useContext(UserContext);
+  const handleSubmit = async (values: Values) => {
+    try {
+      const baseURL =
+        process.env.NODE_ENV === "development"
+          ? "http://greenbutterfly.io/api"
+          : "/api";
+      const response = await axios.post(`${baseURL}/auth/login`, {
+        email: values.email,
+        password: values.password,
+      });
+      if (response.status === 200) {
+        context!.setLoggedIn(true);
+        localStorage.setItem("userToken", response.data.data.token);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

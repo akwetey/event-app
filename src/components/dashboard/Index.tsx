@@ -12,7 +12,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Switch, Route, useRouteMatch, NavLink } from "react-router-dom";
@@ -83,12 +82,15 @@ export default function Index(props: Props) {
 
   const match = useRouteMatch();
 
-  console.log(match.path);
-
   const drawer = (
     <div>
       <div className={classes.toolbar}>
-        <h5 style={{ textAlign: "center" }}> GREEN BUTTERFLY GHANA</h5>
+        <img
+          src="//img1.wsimg.com/isteam/ip/df0e087d-89c0-45d8-8628-bc73a55740d0/2017-02-24-PHOTO-00000028.jpg/:/rs=h:160/qt=q:95"
+          height="60"
+          width="240"
+          alt="Logo"
+        />
       </div>
       <Divider />
       <List>
@@ -126,9 +128,9 @@ export default function Index(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Responsive drawer
-          </Typography>
+          {/* <Typography variant="h6" noWrap>
+            Green Butterfly Ghana
+          </Typography> */}
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">

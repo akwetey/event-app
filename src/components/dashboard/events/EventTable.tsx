@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Badge from "@material-ui/core/Badge";
 import axios from "../../../utils/axios";
 
 interface Events {
@@ -19,6 +20,7 @@ interface Events {
   number_of_slot: number;
   registered_slots: number;
   remaining_slots: number;
+  status: string;
 }
 
 interface History {
@@ -92,6 +94,7 @@ const EventTable: React.FC<History> = ({ history }) => {
                 <TableCell>Name</TableCell>
                 <TableCell>Venue</TableCell>
                 <TableCell>Type</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell>Start Time</TableCell>
                 <TableCell>Duration</TableCell>
                 <TableCell>Number of Slots</TableCell>
@@ -99,41 +102,55 @@ const EventTable: React.FC<History> = ({ history }) => {
                 <TableCell>Remaining Slots</TableCell>
               </TableRow>
             </TableHead>
-            {loading && (
+            {loading ? (
               <TableBody>
                 <TableRow>
-                  <TableCell align="center" colSpan={8}>
+                  <TableCell align="center" colSpan={9}>
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
               </TableBody>
+            ) : (
+              <TableBody>
+                {rows.length > 0 ? (
+                  rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((data, i) => {
+                      return (
+                        <TableRow key={i}>
+                          <TableCell>{data.name}</TableCell>
+                          <TableCell>{data.venue}</TableCell>
+                          <TableCell>{data.type}</TableCell>
+                          <TableCell>
+                            {data.status.toLowerCase() === "active" ? (
+                              <Badge
+                                color="primary"
+                                badgeContent="Active"
+                              ></Badge>
+                            ) : (
+                              <Badge
+                                color="secondary"
+                                badgeContent="Inactive"
+                              ></Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>{data.start_time}</TableCell>
+                          <TableCell>{data.duration}</TableCell>
+                          <TableCell>{data.number_of_slot}</TableCell>
+                          <TableCell>{data.registered_slots}</TableCell>
+                          <TableCell>{data.remaining_slots}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={9}>
+                      No Data Found
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
             )}
-            <TableBody>
-              {rows.length > 0 ? (
-                rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((data, i) => {
-                    return (
-                      <TableRow key={i}>
-                        <TableCell>{data.name}</TableCell>
-                        <TableCell>{data.venue}</TableCell>
-                        <TableCell>{data.type}</TableCell>
-                        <TableCell>{data.start_time}</TableCell>
-                        <TableCell>{data.duration}</TableCell>
-                        <TableCell>{data.number_of_slot}</TableCell>
-                        <TableCell>{data.registered_slots}</TableCell>
-                        <TableCell>{data.remaining_slots}</TableCell>
-                      </TableRow>
-                    );
-                  })
-              ) : (
-                <TableRow>
-                  <TableCell align="center" colSpan={8}>
-                    No Data Found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
