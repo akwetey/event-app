@@ -21,6 +21,7 @@ interface Values {
   number_of_slots: any;
   start_time: any;
   file: any;
+  description: string;
 }
 interface PropsData {
   message: string;
@@ -59,6 +60,7 @@ const Add: React.FC<History> = ({ history }) => {
       formData.append("status", values.status);
       formData.append("type", values.type);
       formData.append("venue", values.venue);
+      formData.append("description", values.description);
       values.file && formData.append("banner", values.file);
       const response = await axios.post("/event", formData);
       setLoading(false);
@@ -110,6 +112,7 @@ const Add: React.FC<History> = ({ history }) => {
           start_time: "",
           type: "",
           status: "",
+          description: "",
           file: null,
         }}
         validationSchema={validationSchema}
@@ -281,6 +284,24 @@ const Add: React.FC<History> = ({ history }) => {
               </Grid>
               <Grid item sm={4}>
                 <FormControl margin="normal" fullWidth>
+                  <TextField
+                    label="Event Description"
+                    placeholder="Description"
+                    multiline
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    name="description"
+                    id="description"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                    value={props.values.description}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item sm={4}>
+                <FormControl margin="normal" fullWidth>
+                  <label>Event Image</label>
                   <TextField
                     variant="outlined"
                     margin="normal"

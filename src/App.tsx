@@ -64,7 +64,7 @@ const App: React.FC = () => {
       <Route
         {...rest}
         render={(props) =>
-          loggedIn ? <Component {...props} /> : <Redirect to="/" />
+          loggedIn ? <Component {...props} /> : <Redirect to="/green-admin" />
         }
       />
     );
@@ -74,7 +74,10 @@ const App: React.FC = () => {
       <UserContext.Provider value={{ loggedIn, setLoggedIn }}>
         <BrowserRouter>
           <Switch>
-            <AuthRoute exact path="/" component={Login} />
+            <Route exact path="/">
+              <Redirect to="/green-admin" />
+            </Route>
+            <AuthRoute path="/green-admin" component={Login} />
             <PrivateRoute path="/dashboard" component={Index} />
           </Switch>
         </BrowserRouter>

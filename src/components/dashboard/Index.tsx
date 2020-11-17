@@ -21,6 +21,7 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core/styles";
+//import Logo from "../../images/logo.png";
 import Events from "./events/Events";
 
 const drawerWidth = 240;
@@ -84,13 +85,11 @@ export default function Index(props: Props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar}>
-        <img
-          src="//img1.wsimg.com/isteam/ip/df0e087d-89c0-45d8-8628-bc73a55740d0/2017-02-24-PHOTO-00000028.jpg/:/rs=h:160/qt=q:95"
-          height="60"
-          width="240"
-          alt="Logo"
-        />
+      <div
+        className={classes.toolbar}
+        style={{ backgroundColor: "rgb(7, 18, 3)" }}
+      >
+        {/* <img src={Logo} height="60" width="240" alt="Logo" /> */}
       </div>
       <Divider />
       <List>

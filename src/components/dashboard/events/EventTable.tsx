@@ -8,8 +8,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import IconButton from "@material-ui/core/IconButton";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import Tooltip from "@material-ui/core/Tooltip";
 import Badge from "@material-ui/core/Badge";
 import axios from "../../../utils/axios";
+import { Link, useRouteMatch } from "react-router-dom";
 
 interface Events {
   name: string;
@@ -21,6 +25,7 @@ interface Events {
   registered_slots: number;
   remaining_slots: number;
   status: string;
+  mask: number;
 }
 
 interface History {
@@ -36,7 +41,7 @@ const EventTable: React.FC<History> = ({ history }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
-
+  const match = useRouteMatch();
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -100,12 +105,13 @@ const EventTable: React.FC<History> = ({ history }) => {
                 <TableCell>Number of Slots</TableCell>
                 <TableCell>Registered Slots</TableCell>
                 <TableCell>Remaining Slots</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             {loading ? (
               <TableBody>
                 <TableRow>
-                  <TableCell align="center" colSpan={9}>
+                  <TableCell align="center" colSpan={10}>
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
@@ -126,11 +132,13 @@ const EventTable: React.FC<History> = ({ history }) => {
                               <Badge
                                 color="primary"
                                 badgeContent="Active"
+                                style={{ marginLeft: "20px" }}
                               ></Badge>
                             ) : (
                               <Badge
                                 color="secondary"
                                 badgeContent="Inactive"
+                                style={{ marginLeft: "20px" }}
                               ></Badge>
                             )}
                           </TableCell>
@@ -139,12 +147,30 @@ const EventTable: React.FC<History> = ({ history }) => {
                           <TableCell>{data.number_of_slot}</TableCell>
                           <TableCell>{data.registered_slots}</TableCell>
                           <TableCell>{data.remaining_slots}</TableCell>
+                          <TableCell>
+                            <Tooltip
+                              title="View Details"
+                              arrow
+                              placement="left-start"
+                            >
+                              <Link
+                                to={{
+                                  pathname: `${match.path}/${data.mask}`,
+                                  state: { mask: data.mask },
+                                }}
+                              >
+                                <IconButton aria-label="View Details">
+                                  <VisibilityIcon />
+                                </IconButton>
+                              </Link>
+                            </Tooltip>
+                          </TableCell>
                         </TableRow>
                       );
                     })
                 ) : (
                   <TableRow>
-                    <TableCell align="center" colSpan={9}>
+                    <TableCell align="center" colSpan={10}>
                       No Data Found
                     </TableCell>
                   </TableRow>
