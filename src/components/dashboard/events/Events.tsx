@@ -10,8 +10,8 @@ const Events: React.FC = () => {
     <div>
       <Switch>
         <Route exact path={`${match.path}`} component={EventTable} />
-        <Route exact path={`${match.path}/:mask`} component={Details} />
         <Route path={`${match.path}/add-event`} component={Add} />
+        <Route path={`${match.path}/:mask`} component={Details} />
       </Switch>
     </div>
   );
