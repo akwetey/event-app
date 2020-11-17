@@ -55,7 +55,7 @@ const Details: React.FC<Location> = (props) => {
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
   const mask = props.location.state.mask;
-  console.log(mask);
+
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
