@@ -11,6 +11,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Tooltip from "@material-ui/core/Tooltip";
+import EditIcon from "@material-ui/icons/Edit";
 import Badge from "@material-ui/core/Badge";
 import axios from "../../../utils/axios";
 import { Link, useRouteMatch } from "react-router-dom";
@@ -105,7 +106,7 @@ const EventTable: React.FC<History> = ({ history }) => {
                 <TableCell>Number of Slots</TableCell>
                 <TableCell>Registered Slots</TableCell>
                 <TableCell>Remaining Slots</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             {loading ? (
@@ -148,6 +149,22 @@ const EventTable: React.FC<History> = ({ history }) => {
                           <TableCell>{data.registered_slots}</TableCell>
                           <TableCell>{data.remaining_slots}</TableCell>
                           <TableCell>
+                            <Tooltip
+                              title="Update Event"
+                              arrow
+                              placement="left-start"
+                            >
+                              <Link
+                                to={{
+                                  pathname: `${match.path}/update-event/${data.mask}`,
+                                  state: { mask: data.mask },
+                                }}
+                              >
+                                <IconButton aria-label="Update Event">
+                                  <EditIcon />
+                                </IconButton>
+                              </Link>
+                            </Tooltip>
                             <Tooltip
                               title="View Details"
                               arrow

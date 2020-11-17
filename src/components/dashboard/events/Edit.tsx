@@ -10,6 +10,7 @@ import { Alert } from "@material-ui/lab";
 import Snackbar from "@material-ui/core/Snackbar";
 import axios from "../../../utils/axios";
 import { InvalidChar } from "./InvalidChar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface Values {
   name: string;
@@ -23,6 +24,7 @@ interface Values {
   file: any;
   description: string;
 }
+
 interface PropsData {
   message: string;
   type: string;
@@ -32,13 +34,44 @@ interface PropsData {
 
 interface History {
   history: string[];
+  location: any;
 }
 
-const Add: React.FC<History> = ({ history }) => {
+interface Events {
+  name: string;
+  venue: string;
+  type: string;
+  start_time: any;
+  duration: number;
+  price: number;
+  number_of_slots: number;
+  description: string;
+  status: string;
+  avatar: any;
+}
+
+const Edit: React.FC<History> = (props) => {
+  const initialState: Events = {
+    name: "",
+    venue: "",
+    type: "",
+    start_time: "",
+    status: "",
+    duration: 0,
+    price: 0,
+    number_of_slots: 0,
+    description: "",
+    avatar: "",
+  };
+
+  const [data, setData] = React.useState(initialState);
   const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [isFetching, setFetching] = React.useState<boolean>(false);
   const [type, setType] = React.useState<string>("");
   const [message, setMessage] = React.useState<string>("");
   const [open, setOpen] = React.useState<boolean>(false);
+
+  const mask = props.location.state.mask;
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Required"),
@@ -47,6 +80,50 @@ const Add: React.FC<History> = ({ history }) => {
     price: Yup.number().required("Required"),
     number_of_slots: Yup.number().required("Required"),
   });
+
+  //fetch data
+  React.useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        setFetching(true);
+        const response = await axios.get<Events>(`/event/${mask}`);
+        if (response.status === 200) {
+          const res = response.data;
+          const formatedDate = new Date(res.start_time)
+            .toISOString()
+            .split(".")[0];
+          if (isMounted) {
+            setFetching(false);
+            setData((state) => ({
+              ...state,
+              name: res.name,
+              venue: res.venue,
+              type: res.type,
+              start_time: formatedDate,
+              duration: res.duration,
+              price: res.price,
+              number_of_slots: res.number_of_slots,
+              description: res.description,
+              avatar: res.avatar,
+              status: res.status,
+            }));
+          }
+        }
+      } catch (error) {
+        if (isMounted) {
+          setFetching(false);
+        }
+        console.log(error);
+        if (error.response) {
+          console.log(error.response.data);
+        }
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, [mask]);
 
   const handleSubmit = async (values: Values) => {
     try {
@@ -62,7 +139,7 @@ const Add: React.FC<History> = ({ history }) => {
       formData.append("venue", values.venue);
       formData.append("description", values.description);
       values.file && formData.append("banner", values.file);
-      const response = await axios.post("/event", formData);
+      const response = await axios.post(`/event/${mask}`, formData);
       setLoading(false);
       const res = response.data;
       if (res.status.toLowerCase() === "success") {
@@ -70,7 +147,7 @@ const Add: React.FC<History> = ({ history }) => {
         setType("success");
         setMessage(res.message);
         setTimeout(() => {
-          history.push("/dashboard/events");
+          props.history.push("/dashboard/events");
         }, 5000);
       }
     } catch (error) {
@@ -92,9 +169,15 @@ const Add: React.FC<History> = ({ history }) => {
     }
   };
 
+  if (isFetching)
+    return (
+      <div style={{ textAlign: "center" }}>
+        <CircularProgress />
+      </div>
+    );
   return (
     <div>
-      <h4>Add Event</h4>
+      <h4>Edit Event</h4>
       <p>Fields marked * are required</p>
       <Notfication
         message={message}
@@ -104,17 +187,18 @@ const Add: React.FC<History> = ({ history }) => {
       />
       <Formik
         initialValues={{
-          name: "",
-          price: 0,
-          number_of_slots: 0,
-          venue: "",
-          duration: 0,
-          start_time: "",
-          type: "",
-          status: "",
-          description: "",
+          name: data.name,
+          price: data.price,
+          number_of_slots: data.number_of_slots,
+          venue: data.venue ?? "",
+          duration: data.duration,
+          start_time: data.start_time,
+          type: data.type ?? "",
+          status: data.status ?? "",
+          description: data.description ?? "",
           file: null,
         }}
+        enableReinitialize={true}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -133,7 +217,7 @@ const Add: React.FC<History> = ({ history }) => {
                     name="name"
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
-                    value={props.values.name}
+                    value={data.name}
                   />
                   {props.touched.name && (
                     <small className="text-danger">{props.errors.name}</small>
@@ -317,6 +401,9 @@ const Add: React.FC<History> = ({ history }) => {
                 </FormControl>
               </Grid>
             </Grid>
+            {data.avatar ? (
+              <img src={data.avatar} alt="event Img" height="250" width="250" />
+            ) : null}
             <div style={{ textAlign: "center", marginTop: "50px" }}>
               <Button
                 type="submit"
@@ -324,7 +411,7 @@ const Add: React.FC<History> = ({ history }) => {
                 color="primary"
                 disabled={isLoading}
               >
-                Save Form
+                Update Form
               </Button>
             </div>
           </form>
@@ -355,4 +442,4 @@ const Notfication: React.FC<PropsData> = (props) => {
   );
 };
 
-export default Add;
+export default Edit;

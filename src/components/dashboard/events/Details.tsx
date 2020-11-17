@@ -50,7 +50,7 @@ const Details: React.FC<Location> = (props) => {
     attendants: [],
   };
   const [rows, setRows] = React.useState(initialState);
-  const [attendats, setAttendats] = React.useState<Attendants[]>([]);
+  const [attendants, setAttendants] = React.useState<Attendants[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
@@ -67,7 +67,7 @@ const Details: React.FC<Location> = (props) => {
           if (isMounted) {
             setLoading(false);
             setRows(res);
-            setAttendats(res.attendants);
+            setAttendants(res.attendants);
           }
         }
       } catch (error) {
@@ -186,8 +186,8 @@ const Details: React.FC<Location> = (props) => {
               </TableBody>
             ) : (
               <TableBody>
-                {attendats.length > 0 ? (
-                  attendats
+                {attendants.length > 0 ? (
+                  attendants
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((data, i) => {
                       return (
@@ -215,7 +215,7 @@ const Details: React.FC<Location> = (props) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={attendats.length}
+          count={attendants.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
