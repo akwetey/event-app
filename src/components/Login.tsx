@@ -10,6 +10,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import UserContext from "../contexts/UserContexts";
+import { Alert } from "@material-ui/lab";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,9 +37,16 @@ interface Values {
   password: string;
 }
 
+interface PropsData {
+  message: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
 const Login: React.FC<History> = () => {
   const classes = useStyles();
-
+  const [message, setMessage] = React.useState<string>("");
+  const [open, setOpen] = React.useState<boolean>(false);
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Email Should Be A Valid Email Address")
@@ -61,13 +70,26 @@ const Login: React.FC<History> = () => {
         localStorage.setItem("userToken", response.data.data.token);
       }
     } catch (error) {
+      setOpen(true);
       console.log(error);
+      const res = error.response.data;
+      if (res.status === "validation error") {
+        res.errors.map((error: any) => {
+          return setMessage(error);
+        });
+      } else {
+        setMessage(res.message);
+      }
+      if (error.response) {
+        console.log(error.response.data);
+      }
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Notfication message={message} open={open} setOpen={setOpen} />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}></Avatar>
         <Typography component="h1" variant="h5">
@@ -124,6 +146,23 @@ const Login: React.FC<History> = () => {
         </Formik>
       </div>
     </Container>
+  );
+};
+
+const Notfication: React.FC<PropsData> = (props) => {
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    props.setOpen(false);
+  };
+
+  return (
+    <Snackbar open={props.open} autoHideDuration={5000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity="error" variant="filled">
+        {props.message}
+      </Alert>
+    </Snackbar>
   );
 };
 
