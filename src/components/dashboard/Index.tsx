@@ -12,8 +12,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import { Switch, Route, useRouteMatch, NavLink } from "react-router-dom";
 import {
   makeStyles,
@@ -21,7 +19,6 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core/styles";
-//import Logo from "../../images/logo.png";
 import Events from "./events/Events";
 
 const drawerWidth = 240;
@@ -57,9 +54,6 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
-    },
-    card: {
-      minWidth: 400,
     },
   })
 );
@@ -164,18 +158,14 @@ export default function Index(props: Props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Card className={classes.card}>
-          <CardContent>
-            <Switch>
-              <Route
-                exact
-                path={`${match.path}`}
-                component={() => <h3>Dashboard</h3>}
-              />
-              <Route path={`${match.path}/events`} component={Events} />
-            </Switch>
-          </CardContent>
-        </Card>
+        <Switch>
+          <Route
+            exact
+            path={`${match.path}`}
+            component={() => <h3>Dashboard</h3>}
+          />
+          <Route path={`${match.path}/events`} component={Events} />
+        </Switch>
       </main>
     </div>
   );

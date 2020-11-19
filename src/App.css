@@ -54,3 +54,14 @@ a .MuiListItemIcon-root {
 .table {
   margin-top: 20px;
 }
+
+a {
+  color: #3f51b5;
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover {
+  color: #3f51b5;
+  cursor: pointer;
+  text-decoration: none;
+}

@@ -9,6 +9,14 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import axios from "../../../utils/axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Workbook from "react-excel-workbook";
+import ImportExportIcon from "@material-ui/icons/ImportExport";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { Link } from "react-router-dom";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Typography from "@material-ui/core/Typography";
 
 interface Events {
   name: string;
@@ -84,6 +92,7 @@ const Details: React.FC<Location> = (props) => {
       isMounted = false;
     };
   }, [mask]);
+
   const handleChangePage = (
     event: any,
     newPage: React.SetStateAction<number>
@@ -99,129 +108,184 @@ const Details: React.FC<Location> = (props) => {
   };
   return (
     <div>
-      <Grid container spacing={0}>
-        <Grid item md={4}>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Name:</TableHead>
-              <TableCell>{rows.name}</TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Venue:</TableHead>
-              <TableCell>{rows.venue}</TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Type:</TableHead>
-              <TableCell>{rows.type}</TableCell>
-            </TableRow>
-          </div>
-        </Grid>
-        <Grid item md={4}>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Start Time:</TableHead>
-              <TableCell>{rows.start_time}</TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Duration:</TableHead>
-              <TableCell>{rows.duration} hours</TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Event Price:</TableHead>
-              <TableCell>GH₵ {rows.price}</TableCell>
-            </TableRow>
-          </div>
-        </Grid>
-        <Grid item md={4}>
-          <div className="table">
-            <TableRow>
-              <TableHead>Number of Slots:</TableHead>
-              <TableCell>{rows.number_of_slots}</TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Registered Slots</TableHead>
-              <TableCell>{rows.registered_slots} </TableCell>
-            </TableRow>
-          </div>
-          <div className="table">
-            <TableRow>
-              <TableHead>Remaining Slots:</TableHead>
-              <TableCell>{rows.remaining_slots}</TableCell>
-            </TableRow>
-          </div>
-        </Grid>
-
-        <h3 style={{ marginTop: "50px" }}>Registered Attendants</h3>
-      </Grid>
-      <div style={{ marginTop: "50px" }}>
-        <TableContainer style={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>Phone Number</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Amount Paid</TableCell>
-                <TableCell>Slot Number</TableCell>
-              </TableRow>
-            </TableHead>
-            {loading ? (
-              <TableBody>
-                <TableRow>
-                  <TableCell align="center" colSpan={6}>
-                    <CircularProgress />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            ) : (
-              <TableBody>
-                {attendants.length > 0 ? (
-                  attendants
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((data, i) => {
-                      return (
-                        <TableRow key={i}>
-                          <TableCell>{data.first_name}</TableCell>
-                          <TableCell>{data.last_name}</TableCell>
-                          <TableCell>{data.phone_number}</TableCell>
-                          <TableCell>{data.email}</TableCell>
-                          <TableCell>{data.amount_paid}</TableCell>
-                          <TableCell>{data.slot_number}</TableCell>
-                        </TableRow>
-                      );
-                    })
-                ) : (
-                  <TableRow>
-                    <TableCell align="center" colSpan={6}>
-                      No Data Found
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
-          component="div"
-          count={attendants.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "10px",
+        }}
+      >
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link color="inherit" to="/dashboard/events">
+            Events
+          </Link>
+          <Typography color="textPrimary">Event Details</Typography>
+        </Breadcrumbs>
       </div>
+      <Card>
+        <CardContent>
+          <Grid container spacing={0}>
+            <Grid item xs={6} sm={4} md={4}>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Name:</TableHead>
+                  <TableCell>{rows.name}</TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Venue:</TableHead>
+                  <TableCell>{rows.venue}</TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Type:</TableHead>
+                  <TableCell>{rows.type}</TableCell>
+                </TableRow>
+              </div>
+            </Grid>
+            <Grid item xs={6} sm={4} md={4}>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Start Time:</TableHead>
+                  <TableCell>{rows.start_time}</TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Duration:</TableHead>
+                  <TableCell>{rows.duration} hours</TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Event Price:</TableHead>
+                  <TableCell>GH₵ {rows.price}</TableCell>
+                </TableRow>
+              </div>
+            </Grid>
+            <Grid item xs={6} sm={4} md={4}>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Number of Slots:</TableHead>
+                  <TableCell>{rows.number_of_slots}</TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Registered Slots</TableHead>
+                  <TableCell>{rows.registered_slots} </TableCell>
+                </TableRow>
+              </div>
+              <div className="table">
+                <TableRow>
+                  <TableHead>Remaining Slots:</TableHead>
+                  <TableCell>{rows.remaining_slots}</TableCell>
+                </TableRow>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={12} style={{ marginTop: "50px" }}>
+              <h3>Registered Attendants</h3>
+            </Grid>
+          </Grid>
+          <div style={{ marginTop: "50px" }}>
+            <TableContainer style={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>First Name</TableCell>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell>Phone Number</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Amount Paid</TableCell>
+                    <TableCell>Slot Number</TableCell>
+                  </TableRow>
+                </TableHead>
+                {loading ? (
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="center" colSpan={6}>
+                        <CircularProgress />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    {attendants.length > 0 ? (
+                      attendants
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((data, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>{data.first_name}</TableCell>
+                              <TableCell>{data.last_name}</TableCell>
+                              <TableCell>{data.phone_number}</TableCell>
+                              <TableCell>{data.email}</TableCell>
+                              <TableCell>{data.amount_paid}</TableCell>
+                              <TableCell>{data.slot_number}</TableCell>
+                            </TableRow>
+                          );
+                        })
+                    ) : (
+                      <TableRow>
+                        <TableCell align="center" colSpan={6}>
+                          No Data Found
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                )}
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 15]}
+              component="div"
+              count={attendants.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+            {attendants.length > 0 && (
+              <div className="float-right my-4">
+                <Workbook
+                  filename="Event Details.xlsx"
+                  element={
+                    <Button
+                      variant="contained"
+                      color="default"
+                      startIcon={<ImportExportIcon />}
+                    >
+                      Export
+                    </Button>
+                  }
+                >
+                  <Workbook.Sheet name={"Visit History"} data={attendants}>
+                    <Workbook.Column label="First Name" value="first_name" />
+                    <Workbook.Column label="Last Name" value="last_name" />
+                    <Workbook.Column
+                      label="Phone Number"
+                      value="phone_number"
+                    />
+                    <Workbook.Column label="Email" value="email" />
+                    <Workbook.Column label="Slot Number" value="slot_number" />
+                    <Workbook.Column label="Amount Paid" value="amount_paid" />
+                    <Workbook.Column
+                      label="Date Registered"
+                      value="registered_on"
+                    />
+                  </Workbook.Sheet>
+                </Workbook>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

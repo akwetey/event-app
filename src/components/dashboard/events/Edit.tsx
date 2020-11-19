@@ -11,7 +11,11 @@ import Snackbar from "@material-ui/core/Snackbar";
 import axios from "../../../utils/axios";
 import { InvalidChar } from "./InvalidChar";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import { Link } from "react-router-dom";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 interface Values {
   name: string;
   venue: string;
@@ -171,14 +175,33 @@ const Edit: React.FC<History> = (props) => {
 
   if (isFetching)
     return (
-      <div style={{ textAlign: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "300px auto",
+        }}
+      >
         <CircularProgress />
       </div>
     );
   return (
     <div>
-      <h4>Edit Event</h4>
-      <p>Fields marked * are required</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "10px",
+        }}
+      >
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link color="inherit" to="/dashboard/events">
+            Events
+          </Link>
+          <Typography color="textPrimary">Edit Event</Typography>
+        </Breadcrumbs>
+      </div>
       <Notfication
         message={message}
         open={open}
@@ -204,216 +227,235 @@ const Edit: React.FC<History> = (props) => {
       >
         {(props) => (
           <form onSubmit={props.handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="name"
-                    type="text"
-                    label="Name of Event *"
-                    name="name"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={data.name}
-                  />
-                  {props.touched.name && (
-                    <small className="text-danger">{props.errors.name}</small>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="price"
-                    type="number"
-                    label="Price GH₵ *"
-                    name="price"
-                    inputProps={{ min: "0", step: "0.01" }}
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.price}
-                    onKeyDown={InvalidChar}
-                  />
-                  {props.touched.price && (
-                    <small className="text-danger">{props.errors.price}</small>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="number_of_slots"
-                    type="number"
-                    label="Number of Slots *"
-                    name="number_of_slots"
-                    inputProps={{ min: "0" }}
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.number_of_slots}
-                    onKeyDown={InvalidChar}
-                  />
-                  {props.touched.number_of_slots && (
-                    <small className="text-danger">
-                      {props.errors.number_of_slots}
-                    </small>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="venue"
-                    type="text"
-                    label="Venue"
-                    name="venue"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.venue}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="duration"
-                    type="number"
-                    inputProps={{ min: "0" }}
-                    label="Duration | Hours *"
-                    name="duration"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.duration}
-                    onKeyDown={InvalidChar}
-                  />
-                  {props.touched.duration && (
-                    <small className="text-danger">
-                      {props.errors.duration}
-                    </small>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    id="start_time"
-                    name="start_time"
-                    label="Start Time *"
-                    type="datetime-local"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={props.values.start_time}
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                  />
-                  {props.touched.start_time && (
-                    <small className="text-danger">
-                      {props.errors.start_time}
-                    </small>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="type"
-                    type="text"
-                    label="Type"
-                    name="type"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.type}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    select
-                    id="status"
-                    label="Status"
-                    name="status"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.status}
+            <Card>
+              <CardContent>
+                <p>Fields marked * are required</p>
+                <Grid container spacing={2}>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="name"
+                        type="text"
+                        label="Name of Event *"
+                        name="name"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={data.name}
+                      />
+                      {props.touched.name && (
+                        <small className="text-danger">
+                          {props.errors.name}
+                        </small>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="price"
+                        type="number"
+                        label="Price GH₵ *"
+                        name="price"
+                        inputProps={{ min: "0", step: "0.01" }}
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.price}
+                        onKeyDown={InvalidChar}
+                      />
+                      {props.touched.price && (
+                        <small className="text-danger">
+                          {props.errors.price}
+                        </small>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="number_of_slots"
+                        type="number"
+                        label="Number of Slots *"
+                        name="number_of_slots"
+                        inputProps={{ min: "0" }}
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.number_of_slots}
+                        onKeyDown={InvalidChar}
+                      />
+                      {props.touched.number_of_slots && (
+                        <small className="text-danger">
+                          {props.errors.number_of_slots}
+                        </small>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="venue"
+                        type="text"
+                        label="Venue"
+                        name="venue"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.venue}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="duration"
+                        type="number"
+                        inputProps={{ min: "0" }}
+                        label="Duration | Hours *"
+                        name="duration"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.duration}
+                        onKeyDown={InvalidChar}
+                      />
+                      {props.touched.duration && (
+                        <small className="text-danger">
+                          {props.errors.duration}
+                        </small>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        id="start_time"
+                        name="start_time"
+                        label="Start Time *"
+                        type="datetime-local"
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={props.values.start_time}
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                      />
+                      {props.touched.start_time && (
+                        <small className="text-danger">
+                          {props.errors.start_time}
+                        </small>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="type"
+                        type="text"
+                        label="Type"
+                        name="type"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.type}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        select
+                        id="status"
+                        label="Status"
+                        name="status"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.status}
+                      >
+                        <MenuItem value="1">Active</MenuItem>
+                        <MenuItem value="0">Inactive</MenuItem>
+                      </TextField>
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <TextField
+                        label="Event Description"
+                        placeholder="Description"
+                        multiline
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        name="description"
+                        id="description"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.description}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      <label>Event Image</label>
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        id="file"
+                        type="file"
+                        inputProps={{ accept: "image/*" }}
+                        name="file"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          props.setFieldValue("file", e.target.files![0])
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4} xs={4}>
+                    <FormControl margin="normal" fullWidth>
+                      {data.avatar && (
+                        <img
+                          src={data.avatar}
+                          alt="event Img"
+                          height="200"
+                          width="200"
+                        />
+                      )}
+                    </FormControl>
+                  </Grid>
+                </Grid>
+
+                <div style={{ textAlign: "center", marginTop: "50px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isLoading}
                   >
-                    <MenuItem value="1">Active</MenuItem>
-                    <MenuItem value="0">Inactive</MenuItem>
-                  </TextField>
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <TextField
-                    label="Event Description"
-                    placeholder="Description"
-                    multiline
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    name="description"
-                    id="description"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    value={props.values.description}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item sm={4}>
-                <FormControl margin="normal" fullWidth>
-                  <label>Event Image</label>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="file"
-                    type="file"
-                    inputProps={{ accept: "image/*" }}
-                    name="file"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      props.setFieldValue("file", e.target.files![0])
-                    }
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-            {data.avatar ? (
-              <img src={data.avatar} alt="event Img" height="250" width="250" />
-            ) : null}
-            <div style={{ textAlign: "center", marginTop: "50px" }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={isLoading}
-              >
-                Update Form
-              </Button>
-            </div>
+                    Update Form
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </form>
         )}
       </Formik>
