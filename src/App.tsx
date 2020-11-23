@@ -21,12 +21,13 @@ const App: React.FC = () => {
   React.useEffect(() => {
     function checkStatus() {
       let token = localStorage.getItem("userToken");
+
       if (!token) {
         setLoggedIn(false);
         return;
       }
-      const { exp } = jwtDecode<JwtDecode>(token);
 
+      const { exp } = jwtDecode<JwtDecode>(token);
       if (((new Date() as unknown) as number) > exp * 1000) {
         setLoggedIn(false);
         localStorage.removeItem("token");

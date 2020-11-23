@@ -46,7 +46,9 @@ interface PropsData {
 const Login: React.FC<History> = () => {
   const classes = useStyles();
   const [message, setMessage] = React.useState<string>("");
+  const [isLoading, setLoading] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Email Should Be A Valid Email Address")
@@ -61,16 +63,19 @@ const Login: React.FC<History> = () => {
         process.env.NODE_ENV === "development"
           ? "http://greenbutterfly.io/api"
           : "/api";
+      setLoading(true);
       const response = await axios.post(`${baseURL}/auth/login`, {
         email: values.email,
         password: values.password,
       });
       if (response.status === 200) {
+        setLoading(false);
         context!.setLoggedIn(true);
         localStorage.setItem("userToken", response.data.data.token);
       }
     } catch (error) {
       setOpen(true);
+      setLoading(false);
       console.log(error);
       const res = error.response.data;
       if (res.status === "validation error") {
@@ -138,6 +143,7 @@ const Login: React.FC<History> = () => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                disabled={isLoading}
               >
                 Sign In
               </Button>
